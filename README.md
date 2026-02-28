@@ -1,301 +1,98 @@
-# WePay — Expense Sharing Application
-
-A simple and efficient application for managing shared expenses within groups. Users can create groups, add expenses, automatically calculate balances, settle debts, and track payment and activity history.
-
----
-
-## Table of Contents
-
-- [Vision](#vision)
-- [Scope](#scope)
-- [Functional Requirements](#functional-requirements)
-- [System Behavior](#system-behavior)
-- [Architecture](#architecture)
-- [API Design](#api-design)
-- [Database Schemas](#database-schemas)
-
----
-
-## Vision
-
-| Feature | Description |
-|--------|-------------|
-| **Groups** | Create and manage groups of people who share expenses |
-| **Expenses** | Add shared expenses with flexible split options |
-| **Balances** | Automatically calculate who owes whom |
-| **Settlements** | Settle debts between users and record payments |
-| **History** | Track payment and activity history |
-
----
-
-## Scope
-
-### 2.1 User Authentication
-
-- User Registration  
-- User Login  
-- User Logout  
-
-### 2.2 Group Management
-
-- Create groups  
-- Add members to groups  
-- Remove members from groups  
-- Leave group  
-- View group balance summary  
-
-### 2.3 Expense Management
-
-- Add expenses  
-- Edit expenses  
-- Delete expenses  
-- Support **equal** and **custom** splits  
-
-### 2.4 Dashboard
-
-- **Total Owed** — amount others owe the user  
-- **Total Owing** — amount the user owes others  
-- **Net Balance** — overall balance  
-
-### 2.5 Activity & Settlements
-
-- Activity history (expenses and settlements)  
-- Settle-up feature  
-- Manual settlement recording  
-
-### 2.6 Notifications (Basic)
-
-- Expense added  
-- Settlement recorded  
-- Member added  
-- Member removed  
-
----
-
-## Functional Requirements
-
-### 3.1 User Management
-
-The system shall allow users to:
-
-- Register a new account  
-- Log in to an existing account  
-- Log out securely  
-- Update profile information  
-- Delete their account  
-
-### 3.2 Group Management
-
-The system shall allow users to:
-
-- Create a group  
-- Add members to a group  
-- Remove members from a group  
-- Leave a group  
-- View group balance summary  
-
-### 3.3 Expense Management
-
-The system shall:
-
-- Automatically recalculate balances after every expense or settlement  
-- Maintain complete transaction history  
-
-Users shall be able to:
-
-- Add an expense  
-- Select the payer  
-- Choose split type: **Equal** | **Exact amount** | **Percentage**  
-- Attach notes to the expense  
-- Edit an existing expense  
-- Delete an expense  
-
-### 3.4 Settlements
-
-The system shall:
-
-- Adjust balances automatically when a settlement is recorded  
-- Maintain a settlement log  
-
-Users shall be able to:
-
-- Mark a debt as settled  
-- Record a manual settlement  
-
-### 3.5 Notifications
-
-The system shall generate basic notifications for:
-
-- Expense added  
-- Settlement recorded  
-- Member added to group  
-- Member removed from group  
-
----
-
-## System Behavior
-
-- **Real-time balances** — All balances must be recalculated in real-time after any expense or settlement.  
-- **Activity history** — All financial activities must be recorded in the activity history.  
-- **Dashboard** — Must reflect updated totals instantly.  
-- **Consistency** — Group balances and individual balances must stay in sync.  
-- **Protected routes** — Protected pages must enforce authentication checks.  
-- **Responsive UI** — Desktop and mobile support required.  
-
----
-
-## Architecture
-
-### Backend Modules
-
-| Module | Responsibility |
-|--------|----------------|
-| **AuthModule** | Registration, login, logout, refresh tokens |
-| **UsersModule** | Profile, update, delete account |
-| **GroupsModule** | CRUD groups, members |
-| **ExpensesModule** | CRUD expenses, splits |
-| **SettlementsModule** | Create and list settlements |
-| **NotificationsModule** | Basic in-app/email notifications |
-
-### Frontend — Pages
-
-**Public (no auth):**
-
-- Login  
-- Register  
-
-**Protected (auth required):**
-
-- Dashboard  
-- Group Details  
-- Add Expense  
-- Profile  
-- Activity History  
-
-Protected routes must verify user authentication before rendering.
-
-### Frontend — Core Components
-
-| Category | Components |
-|----------|------------|
-| **Layout** | Navbar, Sidebar (desktop), Bottom Navigation (mobile) |
-| **Group & Expense** | GroupCard, ExpenseCard, BalanceSummary |
-| **Modals** | AddExpenseModal, SettlementModal |
-| **Notifications** | NotificationToast |
-
----
-
-## API Design (REST)
-
-### Auth APIs
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/auth/register` | Register new user |
-| POST | `/auth/login` | Login |
-| POST | `/auth/refresh` | Refresh access token |
-| POST | `/auth/logout` | Logout |
-
-### User APIs
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/users/me` | Get current user |
-| PATCH | `/users/me` | Update profile |
-| DELETE | `/users/me` | Delete account |
-
-### Group APIs
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/groups` | Create group |
-| GET | `/groups` | List user's groups |
-| GET | `/groups/:id` | Get group by ID |
-| PATCH | `/groups/:id` | Update group |
-| DELETE | `/groups/:id` | Delete group |
-| POST | `/groups/:id/members` | Add member(s) |
-
-### Expense APIs
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/expenses` | Create expense |
-| GET | `/groups/:id/expenses` | List group expenses |
-| PATCH | `/expenses/:id` | Update expense |
-| DELETE | `/expenses/:id` | Delete expense |
-
-### Settlement APIs
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/settlements` | Record settlement |
-| GET | `/groups/:id/settlements` | List group settlements |
-
----
-
-## Database Schemas
-
-### User
-
-```json
-{
-  "_id": "ObjectId",
-  "name": "string",
-  "email": "string (unique, indexed)",
-  "passwordHash": "string",
-  "avatarUrl": "string",
-  "createdAt": "Date",
-  "updatedAt": "Date"
-}
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+</p>
+
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
+
+  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
+    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+
+## Description
+
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+
+## Project setup
+
+```bash
+$ yarn install
 ```
 
-### Group
+## Compile and run the project
 
-```json
-{
-  "_id": "ObjectId",
-  "name": "string",
-  "createdBy": "userId",
-  "members": ["userId"],
-  "createdAt": "Date"
-}
+```bash
+# development
+$ yarn run start
+
+# watch mode
+$ yarn run start:dev
+
+# production mode
+$ yarn run start:prod
 ```
 
-### Expense
+## Run tests
 
-```json
-{
-  "_id": "ObjectId",
-  "groupId": "ObjectId",
-  "description": "string",
-  "amount": "number",
-  "paidBy": "userId",
-  "splitType": "equal | exact | percentage",
-  "splits": [
-    {
-      "userId": "ObjectId",
-      "amountOwed": "number"
-    }
-  ],
-  "createdAt": "Date"
-}
+```bash
+# unit tests
+$ yarn run test
+
+# e2e tests
+$ yarn run test:e2e
+
+# test coverage
+$ yarn run test:cov
 ```
 
-### Settlement
+## Deployment
 
-```json
-{
-  "_id": "ObjectId",
-  "groupId": "ObjectId",
-  "fromUser": "userId",
-  "toUser": "userId",
-  "amount": "number",
-  "createdAt": "Date"
-}
+When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+
+If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+
+```bash
+$ yarn install -g @nestjs/mau
+$ mau deploy
 ```
 
----
+With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
-## Summary
+## Resources
 
-This document defines the product and technical requirements for the WePay Expense Sharing Application: vision, scope, functional requirements, system behavior, backend and frontend architecture, REST API design, and database schemas. Use it as the single source of truth for implementation and alignment across frontend and backend.
+Check out a few resources that may come in handy when working with NestJS:
+
+- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
+- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
+- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
+- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
+- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
+- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
+- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
+- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+
+## Support
+
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+
+## Stay in touch
+
+- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
+
+## License
+
+Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
