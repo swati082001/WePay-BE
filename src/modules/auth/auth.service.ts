@@ -30,7 +30,8 @@ export class AuthService {
     }
     const passwordHash = await argon2.hash(dto.password);
     const user = await this.usersService.create({
-      name: dto.name,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
       email: dto.email,
       passwordHash,
       avatarUrl: dto.avatarUrl ?? null,
@@ -44,6 +45,9 @@ export class AuthService {
     const user = await this.usersService.findByEmail(dto.email);
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
+    }
+    if (!user.passwordHash) {
+      throw new UnauthorizedException('This account uses Google sign-in');
     }
     const valid = await argon2.verify(user.passwordHash, dto.password);
     if (!valid) {
@@ -72,6 +76,12 @@ export class AuthService {
 
   async logout(): Promise<void> {
     // Stateless JWT: client discards tokens. Optional blacklist can be added later.
+  }
+
+  /** Issue tokens for an already-validated user (e.g. from Google OAuth). */
+  async loginWithPayload(user: AuthUserPayload): Promise<AuthResult> {
+    const tokens = await this.issueTokens(user);
+    return { ...tokens, user };
   }
 
   private async issueTokens(user: AuthUserPayload): Promise<TokenPair> {

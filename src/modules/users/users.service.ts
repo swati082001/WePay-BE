@@ -6,7 +6,7 @@ import type { CreateUserPayload, UserResponse } from './interfaces/user.interfac
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}  //dependency injection - db model is injected into the service
 
   async findByEmail(email: string): Promise<UserDocument | null> {
     return this.userModel.findOne({ email }).select('+passwordHash').exec();
@@ -27,7 +27,7 @@ export class UsersService {
 
   async update(
     id: string,
-    updates: Partial<Pick<CreateUserPayload, 'name' | 'avatarUrl'>>,
+    updates: Partial<Pick<CreateUserPayload, 'firstName' | 'lastName' | 'avatarUrl'>>,
   ): Promise<UserDocument> {
     const user = await this.userModel.findByIdAndUpdate(id, updates, { new: true }).exec();
     if (!user) {
@@ -46,7 +46,8 @@ export class UsersService {
   toResponse(user: UserDocument): UserResponse {
     return {
       id: user._id.toString(),
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       avatarUrl: user.avatarUrl ?? null,
       createdAt: user.createdAt,

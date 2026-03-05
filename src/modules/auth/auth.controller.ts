@@ -1,9 +1,11 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, Get, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import type { AuthUserPayload } from './dto/auth-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -46,4 +48,19 @@ export class AuthController {
   async logout(): Promise<void> {
     return this.authService.logout();
   }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  @ApiOperation({ summary: 'Redirect to Google OAuth' })
+  async googleAuth() {
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  @ApiOperation({ summary: 'Google OAuth callback – returns tokens and user' })
+  @ApiResponse({ status: 200, description: 'Login/register successful; returns accessToken, refreshToken, user' })
+  async googleAuthRedirect(@Req() req: { user: AuthUserPayload }) {
+    return this.authService.loginWithPayload(req.user);
+  }
 }
+  

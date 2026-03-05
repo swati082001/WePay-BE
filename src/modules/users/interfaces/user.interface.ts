@@ -1,13 +1,15 @@
 export interface CreateUserPayload {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  passwordHash: string;
+  passwordHash?: string;
   avatarUrl?: string | null;
 }
 
 export interface UserResponse {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   avatarUrl: string | null;
   createdAt: Date;

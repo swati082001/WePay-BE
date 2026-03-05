@@ -1,6 +1,7 @@
 export type AuthUserPayload = {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   avatarUrl: string | null;
   createdAt: Date;
