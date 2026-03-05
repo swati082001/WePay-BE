@@ -16,6 +16,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { JwtPayload } from '../../common/decorators/current-user.decorator';
 import { ParseMongoIdPipe } from '../../common/pipes/parse-mongo-id.pipe';
 import { GroupsService } from './groups.service';
+import { ExpensesService } from '../expenses/expenses.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { AddMembersDto } from './dto/add-members.dto';
@@ -23,7 +24,10 @@ import { AddMembersDto } from './dto/add-members.dto';
 @Controller('groups')
 @UseGuards(AuthGuard('jwt'))
 export class GroupsController {
-  constructor(private readonly groupsService: GroupsService) {}
+  constructor(
+    private readonly groupsService: GroupsService,
+    private readonly expensesService: ExpensesService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a group' })
@@ -44,6 +48,19 @@ export class GroupsController {
   async findAll(@CurrentUser() payload: JwtPayload) {
     const groups = await this.groupsService.findAll(payload.sub);
     return groups.map((g) => this.groupsService.toResponse(g));
+  }
+
+  @Get(':id/expenses')
+  @ApiOperation({ summary: 'List expenses for a group' })
+  @ApiResponse({ status: 200, description: 'List of expenses' })
+  @ApiResponse({ status: 404, description: 'Group not found' })
+  @ApiResponse({ status: 403, description: 'Not a member' })
+  async findExpensesByGroup(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @CurrentUser() payload: JwtPayload,
+  ) {
+    const expenses = await this.expensesService.findAllByGroup(id, payload.sub);
+    return expenses.map((e) => this.expensesService.toResponse(e));
   }
 
   @Get(':id')

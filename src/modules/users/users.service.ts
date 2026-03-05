@@ -6,7 +6,7 @@ import type { CreateUserPayload, UserResponse } from './interfaces/user.interfac
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}  //dependency injection - db model is injected into the service
 
   async findByEmail(email: string): Promise<UserDocument | null> {
     return this.userModel.findOne({ email }).select('+passwordHash').exec();

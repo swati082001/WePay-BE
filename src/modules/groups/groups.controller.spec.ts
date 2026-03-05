@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthGuard } from '@nestjs/passport';
 import { GroupsController } from './groups.controller';
 import { GroupsService } from './groups.service';
+import { ExpensesService } from '../expenses/expenses.service';
 
 describe('GroupsController', () => {
   let controller: GroupsController;
@@ -17,6 +18,11 @@ describe('GroupsController', () => {
     toResponse: jest.fn((x) => x),
   };
 
+  const mockExpensesService = {
+    findAllByGroup: jest.fn().mockResolvedValue([]),
+    toResponse: jest.fn((x) => x),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GroupsController],
@@ -24,6 +30,10 @@ describe('GroupsController', () => {
         {
           provide: GroupsService,
           useValue: mockGroupsService,
+        },
+        {
+          provide: ExpensesService,
+          useValue: mockExpensesService,
         },
       ],
     })
@@ -55,6 +65,16 @@ describe('GroupsController', () => {
       mockGroupsService.findAll.mockResolvedValue([]);
       await controller.findAll(payload);
       expect(mockGroupsService.findAll).toHaveBeenCalledWith('user-id');
+    });
+  });
+
+  describe('findExpensesByGroup', () => {
+    it('should call expensesService.findAllByGroup with id and payload.sub', async () => {
+      const payload = { sub: 'user-id', email: 'u@e.com' };
+      mockExpensesService.findAllByGroup.mockResolvedValue([]);
+      const result = await controller.findExpensesByGroup('group-id', payload);
+      expect(mockExpensesService.findAllByGroup).toHaveBeenCalledWith('group-id', 'user-id');
+      expect(result).toEqual([]);
     });
   });
 

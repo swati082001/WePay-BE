@@ -17,7 +17,7 @@ import { UsersService } from './users.service';
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}    //dependency injection
 
   @Get('me')
   async getMe(@CurrentUser() payload: JwtPayload) {
